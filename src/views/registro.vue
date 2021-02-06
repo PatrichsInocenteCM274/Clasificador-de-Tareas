@@ -1,48 +1,54 @@
 <template>
-  <div class="Home">
-          <div class="wrapper fadeInDown">
+  <div class="registro">
+      <div class="wrapper ">
               <div id="formContent">
-                <div class="imagen-logo fadeIn first">
-                  <img  src="@/assets/logo.png" id="icon" alt="User Icon" />
-                </div>
+                <!-- Tabs Titles -->
 
+                <!-- Icon -->
+                <div class="fadeIn first">
+                  <img src="@/assets/logo1.png" id="icon" alt="User Icon" />
+                </div>
+                    <div class="title2 fadeIn second">
+                    <br> <b>Bienvenido, </b> Ingrese sus datos
+                     </div>
                 <!-- Login Form -->
                 <form v-on:submit.prevent="login">
-                  <input type="text" id="login" class="fadeIn second" name="login" placeholder="Correo" v-model="usuario">                        
-                   <b-form-input id="password" class="fadeIn second"  placeholder="Password" type="password" v-model="password"></b-form-input>
-                        <div :class="validacion">
-                        <i :class="icono"></i>
+                  <input type="text" id="login" class="fadeIn second" name="login" placeholder="Correo" v-model="usuario">
+                  <input type="text" id="password" class="fadeIn third" name="login" placeholder="Password" v-model="password">
+                  <input type="text" id="nombre" class="fadeIn second" name="login" placeholder="Nombre" v-model="nombre">
+                  <input type="text" id="apellido" class="fadeIn third" name="login" placeholder="Apellido" v-model="apellido">
+                  <div class="invalido">
+                        
                         <p> <b>{{ advertencia }}</b></p> 
-                        </div> 
-                  <input type="submit" class="fadeIn fourth" value="Log In">
-                  <button type="button" class="boton-registro fadeIn fourth" v-on:click="registro()" >Registrarse</button>
+                  </div> 
+                  <input type="submit" class="fadeIn fourth" value="Listo, Enviar!">
                 </form>
+
+
 
               </div>
             </div>
+
   </div>
 </template>
+
 <script>
 import axios from 'axios';
-import Vue from 'vue'
-import VueCookies from 'vue-cookies'
-Vue.config.silent = true;
-Vue.use(VueCookies)
-Vue.$cookies.config('7d')
+
 export default {
-  name: 'about',
+  name: 'Home',
   components: {
-    
+
   },
   data: function(){
     return {
       usuario: "",
       password: "",
-      advertencia: "",
-      icono: "",
-      validacion: "",
+      nombre: "",
+      apellido: "",
       error: false,
-      error_msg: "Usuario Invalido",
+      error_msg: "",
+      advertencia: ""
     }
   },
   methods:{
@@ -51,27 +57,18 @@ export default {
           usr : this.usuario,
           pas: this.password
         };
-        axios.post('https://howerapp.herokuapp.com/login', "usr="+this.usuario+"&pas="+this.password)
+        axios.post('http://howerapp.herokuapp.com/register', "usr="+this.usuario+"&pas="+this.password+"&nombre="+this.nombre+"&apellido="+this.apellido)
         .then( data =>{
            console.log(json);
            console.log(data);
-           if(data.data.msg == "UserIncorrecto"){
-             console.log("usuario no es correcto");
+           if(data.data.msg == "Usuario creado."){
+             console.log("Usuario Creado Exitosamente");
              localStorage.token = data.data.result;
-             this.validacion="invalido"
-             this.advertencia="Usuario Invalido!"
-             this.icono="bx bx-sad bx-sm"
+             this.$router.push('/');
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
            }else{
-             console.log("usuario correcto");
-             this.validacion="valido";
-             this.advertencia="Usuario Valido!";
-             this.icono="bx bx-happy-heart-eyes bx-sm";
-              Vue.$cookies.set('usuario',this.usuario);  
-             this.$router.push({
-               name: "chatbox"
-               });
-             
+             console.log("Error de creacion");
+             this.advertencia="Usuario ya existente, intentelo de nuevo"
            }
         })
     },
@@ -81,13 +78,24 @@ export default {
   }
 }
 </script>
-<style lang="less">
+
+
+<style scoped>
 
 
 /* BASIC */
 
-html {
-  background-color: gainsboro;
+    .title2{
+      
+      margin-left: 20px;
+      font-weight: 400;
+      font-size: 120%;
+      color: darkblue;
+      text-align: left;
+    }
+
+.registro {
+  background-image: url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRShZ6oYV7eyYpomTfxlk0BOe7F31hIRHmyGQ&usqp=CAU);
 }
 
 body {                                                                                                                                                                                                
@@ -123,26 +131,31 @@ h2 {
   justify-content: center;
   width: 100%;
   min-height: 100%;
-  padding: 0px;
-
+  padding: 20px;
 }
-
-
-
 
 #formContent {
-  background-image: url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRShZ6oYV7eyYpomTfxlk0BOe7F31hIRHmyGQ&usqp=CAU);
-  width: 100%;
+  -webkit-border-radius: 10px 10px 10px 10px;
+  border-radius: 10px 10px 10px 10px;
+  background: #fff;
+  padding: 30px;
+  width: 90%;
   max-width: 450px;
-  padding: 40px;
+  position: relative;
+  padding: 0px;
+  -webkit-box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
+  box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
   text-align: center;
-  .imagen{
-    margin-top: 0;
-    padding: 20px;
-    
-  }
 }
 
+#formFooter {
+  background-color: #f6f6f6;
+  border-top: 1px solid #dce8f1;
+  padding: 25px;
+  text-align: center;
+  -webkit-border-radius: 0 0 10px 10px;
+  border-radius: 0 0 10px 10px;
+}
 
 
 
@@ -161,14 +174,12 @@ h2.active {
 
 /* FORM TYPOGRAPHY*/
 
-
-
 input[type=button], input[type=submit], input[type=reset]  {
   background-color: #56baed;
   border: none;
   color: white;
   padding: 15px;
-  width: 100px;
+  width: 200px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
@@ -185,52 +196,9 @@ input[type=button], input[type=submit], input[type=reset]  {
   -o-transition: all 0.3s ease-in-out;
   transition: all 0.3s ease-in-out;
 }
-.invalido{
-  margin-top: 20px;
-  color: red;
-}
-
-.valido{
-  margin-top: 20px;
-  color: green;
-}
-
-.imagen-logo{
-  align-items: center;
-  img{
-    
-    margin:10px;
-    border-radius: 20px;
-  }
-}
-
-.boton-registro{
-  background-color: #013853;
-  border: none;
-  color: white;
-  padding: 15px;
-  width: 120px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  text-transform: uppercase;
-  font-size: 13px;
-  -webkit-box-shadow: 0 10px 30px 0 rgba(95,186,233,0.4);
-  box-shadow: 0 10px 30px 0 rgba(95,186,233,0.4);
-  -webkit-border-radius: 5px 5px 5px 5px;
-  border-radius: 5px 5px 5px 5px;
-  margin: 5px 10px 0px 10px;
-  -webkit-transition: all 0.3s ease-in-out;
-  -moz-transition: all 0.3s ease-in-out;
-  -ms-transition: all 0.3s ease-in-out;
-  -o-transition: all 0.3s ease-in-out;
-  transition: all 0.3s ease-in-out;
-}
 
 input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover  {
-  background-color: #e7395f;
-   padding: 15px;
-  width: 100px;
+  background-color: #39ace7;
 }
 
 input[type=button]:active, input[type=submit]:active, input[type=reset]:active  {
@@ -241,18 +209,18 @@ input[type=button]:active, input[type=submit]:active, input[type=reset]:active  
   transform: scale(0.95);
 }
 
-input[type=text]{
+input[type=text] {
   background-color: #f6f6f6;
   border: none;
   color: #0d0d0d;
-  padding: 8px 32px;
+  padding: 15px 32px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
   font-size: 16px;
   margin: 5px;
-  
-  border: 0.5px solid #5f5454;
+  width: 85%;
+  border: 2px solid #f6f6f6;
   -webkit-transition: all 0.5s ease-in-out;
   -moz-transition: all 0.5s ease-in-out;
   -ms-transition: all 0.5s ease-in-out;
@@ -260,15 +228,6 @@ input[type=text]{
   transition: all 0.5s ease-in-out;
   -webkit-border-radius: 5px 5px 5px 5px;
   border-radius: 5px 5px 5px 5px;
-}
-
-input[type=password]{
-  text-align: center;
-  background-color: #f6f6f6;
-  border: 0.5px solid #5f5454;
-  width: 92%;
-  //height: 50%;
-  margin-left: 10px;
 }
 
 input[type=text]:focus {
@@ -326,7 +285,6 @@ input[type=text]:placeholder {
 @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
 
 .fadeIn {
-  margin-top: 10px;
   opacity:0;
   -webkit-animation:fadeIn ease-in 1;
   -moz-animation:fadeIn ease-in 1;
@@ -364,7 +322,7 @@ input[type=text]:placeholder {
   -moz-animation-delay: 1s;
   animation-delay: 1s;
 }
-d
+
 /* Simple CSS3 Fade-in Animation */
 .underlineHover:after {
   display: block;
@@ -372,7 +330,7 @@ d
   bottom: -10px;
   width: 0;
   height: 2px;
-  background-color: #c0ed56;
+  background-color: #56baed;
   content: "";
   transition: width 0.2s;
 }
@@ -394,7 +352,7 @@ d
 } 
 
 #icon {
-  width:70%;
+  width:60%;
 }
 
 
